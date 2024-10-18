@@ -1,4 +1,4 @@
-package leetcode.p_2403_minimum_time_to_kill_all_monsters;
+    package leetcode.p_2403_minimum_time_to_kill_all_monsters;
 
 class Solution {
     public static long minimumTime(int[] power) {

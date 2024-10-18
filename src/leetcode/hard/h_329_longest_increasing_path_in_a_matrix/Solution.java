@@ -21,15 +21,17 @@ class Solution {
 
         int[] directions = {-1, 0, 1, 0, -1};
 
+        int maxLength = 1;
         for (int k = 0; k < 4; k++) {
             int nextRow = row + directions[k];
             int nextCol = col + directions[k + 1];
 
-            if (nextRow >= 0 && nextRow < matrix.length && nextCol >= 0 && nextCol < matrix[0].length && matrix[nextRow][nextCol] > matrix[row][col]) {
-                dp[row][col] = Math.max(dp[row][col], dfs(matrix, nextRow, nextCol, dp));
+            if (nextRow >= 0 && nextRow < matrix.length && nextCol >= 0 && nextCol < matrix[0].length && matrix[row][col] < matrix[nextRow][nextCol]) {
+                maxLength = Math.max(maxLength, 1 + dfs(matrix, nextRow, nextCol, dp));
             }
         }
-        return dp[row][col] = 1 + dp[row][col];
+        dp[row][col] = maxLength;
+        return dp[row][col];
     }
 
     public static void main(String[] args) {
@@ -37,3 +39,4 @@ class Solution {
         System.out.println(longestIncreasingPath(matrix));
     }
 }
+

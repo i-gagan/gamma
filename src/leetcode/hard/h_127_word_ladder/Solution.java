@@ -8,7 +8,6 @@ import java.util.*;
 class Solution {
     public static int ladderLength(String beginWord, String endWord, List<String> wordList) {
         Set<String> wordSet = new HashSet<>(wordList);
-        wordSet.addAll(wordList);
 
         if (!wordSet.contains(endWord)) {
             return 0;

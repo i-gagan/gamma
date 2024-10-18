@@ -41,6 +41,7 @@ class Solution {
                 }
             }
         }
+        System.out.println(adjacencyListMap);
 
         StringBuilder result = new StringBuilder();
 

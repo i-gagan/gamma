@@ -24,8 +24,9 @@ class MaxStack {
     }
 
     public int pop() {
-        maxValueStack.poll();
-        return stack.pop();
+        int poppedValue = stack.pop();
+        maxValueStack.remove(poppedValue);
+        return poppedValue;
     }
 
     public int top() {

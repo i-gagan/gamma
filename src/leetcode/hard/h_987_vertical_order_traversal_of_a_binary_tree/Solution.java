@@ -35,7 +35,7 @@ class Solution {
             public int compare(int[] node1, int[] node2) {
                 if (node1[0] != node2[0]) return Integer.compare(node1[0], node2[0]);
 
-                if (node1[1] != node2[1]) return Integer.compare(node2[1], node1[1]);
+                if (node1[1] != node2[1]) return Integer.compare(node1[1], node2[1]);
 
                 return Integer.compare(node1[2], node2[2]);
             }
@@ -59,8 +59,8 @@ class Solution {
             return;
         }
         nodes.add(new int[]{column, row, node.val});
-        dfs(node.left, column - 1, row - 1, nodes);
-        dfs(node.right, column + 1, row - 1, nodes);
+        dfs(node.left, column - 1, row + 1, nodes);
+        dfs(node.right, column + 1, row + 1, nodes);
     }
 
     public static void main(String[] args) {

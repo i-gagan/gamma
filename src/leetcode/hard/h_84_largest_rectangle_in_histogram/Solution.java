@@ -2,54 +2,55 @@ package leetcode.hard.h_84_largest_rectangle_in_histogram;
 
 //https://leetcode.com/problems/largest-rectangle-in-histogram/description/
 
-import java.util.Arrays;
 import java.util.Stack;
 
 class Solution {
     public static int largestRectangleArea(int[] heights) {
-        int[] prefix = new int[heights.length], suffix = new int[heights.length];
+        int[] prefix = nextSmallerElementLeftSide(heights);
+        int[] suffix = nextSmallerElementRightSide(heights);
         int largestRectangleArea = Integer.MIN_VALUE;
 
-        Stack<Integer> stack = new Stack<>();
-
         for (int i = 0; i < heights.length; i++) {
-            while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) {
-                stack.pop();
-            }
-            if (stack.isEmpty()) {
-                prefix[i] = 0;
-            } else {
-                if (heights[stack.peek()] < heights[i]) {
-                    prefix[i] = stack.peek() + 1;
-                }
-            }
-            stack.push(i);
-        }
-
-        stack.clear();
-
-        for (int i = heights.length - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) {
-                stack.pop();
-            }
-            if (stack.isEmpty()) {
-                suffix[i] = heights.length - 1;
-            } else {
-                if (heights[stack.peek()] < heights[i]) {
-                    suffix[i] = stack.peek() - 1;
-                }
-            }
-            stack.push(i);
-        }
-
-        System.out.println(Arrays.toString(prefix));
-        System.out.println(Arrays.toString(suffix));
-
-        System.out.println();
-        for (int i = 0; i < heights.length; i++) {
-            largestRectangleArea = Math.max(largestRectangleArea, heights[i] * (suffix[i] - prefix[i] + 1));
+            largestRectangleArea = Math.max(largestRectangleArea, heights[i] * (suffix[i] - prefix[i] - 1));
         }
         return largestRectangleArea;
+    }
+
+    private static int[] nextSmallerElementLeftSide(int[] heights) {
+        Stack<Integer> stack = new Stack<>();
+        int n = heights.length;
+        int[] prefix = new int[n];
+        for (int i = 0; i < n; i++) {
+            while (!stack.empty() && heights[stack.peek()] >= heights[i]) {
+                stack.pop();
+            }
+            if (stack.empty()) {
+                prefix[i] = -1;
+            } else {
+                prefix[i] = stack.peek();
+            }
+
+            stack.push(i);
+        }
+        return prefix;
+    }
+
+    private static int[] nextSmallerElementRightSide(int[] heights) {
+        Stack<Integer> stack = new Stack<>();
+        int n = heights.length;
+        int[] suffix = new int[n];
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.empty() && heights[stack.peek()] >= heights[i]) {
+                stack.pop();
+            }
+            if (stack.empty()) {
+                suffix[i] = n;
+            } else {
+                suffix[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+        return suffix;
     }
 
     public static void main(String[] args) {

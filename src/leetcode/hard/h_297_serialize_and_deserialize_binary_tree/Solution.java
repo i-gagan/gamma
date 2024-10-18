@@ -31,7 +31,8 @@ class Codec {
 
     private void serializePreOrder(TreeNode node, StringBuilder stringBuilder) {
         if (node == null) {
-            stringBuilder.append(NULL_SYMBOL).append(SEPARATOR);
+            stringBuilder.append(NULL_SYMBOL);
+            stringBuilder.append(SEPARATOR);
             return;
         }
         stringBuilder.append(node.val).append(SEPARATOR);

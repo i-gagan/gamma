@@ -43,7 +43,9 @@ class Solution {
         if (index >= jobs.length) {
             return 0;
         }
-        int nextIndex = getNextJobIndex(jobs, index, jobs[index].endTime);
+        int nextIndex = getNextJobIndex1(jobs, index, jobs[index].endTime);
+        //int nextIndex = getNextJobIndex2(jobs, index, jobs[index].endTime);
+
         int include = jobs[index].profit + solve1(jobs, nextIndex);
 
         int exclude = solve1(jobs, index + 1);
@@ -57,14 +59,16 @@ class Solution {
         if (dp[index] != -1) {
             return dp[index];
         }
-        int nextIndex = getNextJobIndex(jobs, index, jobs[index].endTime);
+        int nextIndex = getNextJobIndex1(jobs, index, jobs[index].endTime);
+        //int nextIndex = getNextJobIndex2(jobs, index, jobs[index].endTime);
+
         int include = jobs[index].profit + solve2(jobs, nextIndex, dp);
 
         int exclude = solve2(jobs, index + 1, dp);
         return dp[index] = Math.max(include, exclude);
     }
 
-    private static int getNextJobIndex(Job[] jobs, int currentIndex, int currentEndTime) {
+    private static int getNextJobIndex1(Job[] jobs, int currentIndex, int currentEndTime) {
         int leftIndex = currentIndex + 1, rightIndex = jobs.length - 1;
 
         int result = jobs.length;
@@ -79,6 +83,15 @@ class Solution {
             }
         }
         return result;
+    }
+
+    private static int getNextJobIndex2(Job[] jobs, int currentIndex, int currentEndTime) {
+        for (int i = currentIndex + 1; i < jobs.length; i++) {
+            if (jobs[i].startTime >= currentEndTime) {
+                return i;
+            }
+        }
+        return jobs.length;
     }
 
     public static void main(String[] args) {

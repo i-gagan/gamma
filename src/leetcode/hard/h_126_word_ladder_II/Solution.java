@@ -13,7 +13,7 @@ class Solution {
             return result;
         }
 
-        Map<String, Set<String>> reverseAdjacencyMap = new HashMap<>();
+        Map<String, Set<String>> predecessorMap = new HashMap<>();
         Queue<String> queue = new LinkedList<>();
 
         queue.offer(beginWord);
@@ -41,10 +41,10 @@ class Solution {
                         String newWord = new String(wordChars);
 
                         if (wordSet.contains(newWord)) {
-                            if (!reverseAdjacencyMap.containsKey(newWord)) {
-                                reverseAdjacencyMap.put(newWord, new HashSet<>());
+                            if (!predecessorMap.containsKey(newWord)) {
+                                predecessorMap.put(newWord, new HashSet<>());
                             }
-                            reverseAdjacencyMap.get(newWord).add(word);
+                            predecessorMap.get(newWord).add(word);
                             currentLevelWords.add(newWord);
 
                             if (newWord.equals(endWord)) {
@@ -66,11 +66,11 @@ class Solution {
 
         List<String> path = new ArrayList<>();
         path.add(endWord);
-        backtrack(endWord, beginWord, reverseAdjacencyMap, result, path);
+        backtrack(endWord, beginWord, predecessorMap, result, path);
         return result;
     }
 
-    private static void backtrack(String currentWord, String beginWord, Map<String, Set<String>> reverseAdjacencyMap,
+    private static void backtrack(String currentWord, String beginWord, Map<String, Set<String>> predecessorMap,
                                   List<List<String>> result, List<String> path) {
         if (currentWord.equals(beginWord)) {
             List<String> validPath = new ArrayList<>(path);
@@ -79,13 +79,13 @@ class Solution {
             return;
         }
 
-        if (!reverseAdjacencyMap.containsKey(currentWord)) {
+        if (!predecessorMap.containsKey(currentWord)) {
             return;
         }
 
-        for (String predecessor : reverseAdjacencyMap.get(currentWord)) {
+        for (String predecessor : predecessorMap.get(currentWord)) {
             path.add(predecessor);
-            backtrack(predecessor, beginWord, reverseAdjacencyMap, result, path);
+            backtrack(predecessor, beginWord, predecessorMap, result, path);
             path.remove(path.size() - 1);
         }
     }
