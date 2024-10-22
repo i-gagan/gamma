@@ -1,4 +1,4 @@
-package companies.atlassian;
+package companies.atlassian.karat;
 
 /*
 You are with your friends in a castle, where there are multiple rooms named after flowers. Some of the rooms contain treasures - we call them the treasure rooms.

@@ -15,11 +15,11 @@ class Solution {
         HashMap<Long, Integer> hashMap = new HashMap<>();
         Counter counter = new Counter();
         long prefixSum = 0;
-        pathSumUtil(root, targetSum, prefixSum, hashMap, counter);
+        solve(root, targetSum, prefixSum, hashMap, counter);
         return counter.counter;
     }
 
-    public static void pathSumUtil(TreeNode root, int targetSum, long prefixSum, HashMap<Long, Integer> hashMap, Counter counter) {
+    public static void solve(TreeNode root, int targetSum, long prefixSum, HashMap<Long, Integer> hashMap, Counter counter) {
         if (root == null) {
             return;
         }
@@ -35,11 +35,12 @@ class Solution {
 
         hashMap.put(prefixSum, hashMap.getOrDefault(prefixSum, 0) + 1);
 
-        pathSumUtil(root.left, targetSum, prefixSum, hashMap, counter);
-        pathSumUtil(root.right, targetSum, prefixSum, hashMap, counter);
+        solve(root.left, targetSum, prefixSum, hashMap, counter);
+        solve(root.right, targetSum, prefixSum, hashMap, counter);
 
         hashMap.put(prefixSum, hashMap.get(prefixSum) - 1);
     }
+
     public static void main(String[] args) {
         int[] input = {1, 2, 3, 4, 5, 3, 7, 8};
 

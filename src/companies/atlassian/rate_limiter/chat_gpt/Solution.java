@@ -1,4 +1,4 @@
-package companies.atlassian.rate_limiter;
+package companies.atlassian.rate_limiter.chat_gpt;
 
 import java.util.concurrent.*;
 import java.util.*;
