@@ -76,13 +76,13 @@ class Solution {
             int leftNodeIndex = 2 * node.index - 1;
             int rightNodeIndex = 2 * node.index;
 
-            if (nodes[leftNodeIndex] != -1) {
+            if (leftNodeIndex < nodes.length && nodes[leftNodeIndex] != -1) {
                 node.left = new TreeNode(nodes[leftNodeIndex], leftNodeIndex + 1);
                 queue.add(node.left);
                 nodeIndex++;
             }
 
-            if (nodes[rightNodeIndex] != -1) {
+            if (rightNodeIndex < nodes.length && nodes[rightNodeIndex] != -1) {
                 node.right = new TreeNode(nodes[rightNodeIndex], rightNodeIndex + 1);
                 queue.add(node.right);
                 nodeIndex++;

@@ -1,103 +1,109 @@
 package companies.atlassian.rate_limiter.interview;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 class Rule {
-    int noOfRequest;
-    long timeWindowInMs;
+    int maxRequests;
+    int windowTimeMillis;
 
-    Rule(int noOfRequest, long timeWindowInSec) {
-        this.noOfRequest = noOfRequest;
-        this.timeWindowInMs = timeWindowInSec * 1000;
+    Rule(int maxRequests, int windowTimeMillis) {
+        this.maxRequests = maxRequests;
+        this.windowTimeMillis = windowTimeMillis;
     }
 }
 
-class Customer implements RateLimiter {
+class Customer {
     String customerId;
-    Deque<Long> timeStampQueue;
-    Rule rule;
+    SlidingWindowRateLimiter customerLimiter;
 
-    Customer(String customerId, Rule rule) {
+    public Customer(String customerId, Rule rule) {
         this.customerId = customerId;
+        this.customerLimiter = new SlidingWindowRateLimiter(rule);
+    }
+}
+
+class SlidingWindowRateLimiter {
+    Rule rule;
+    private final long[] timestamps;
+    private int start;
+    private int end;
+    private int size;
+
+    public SlidingWindowRateLimiter(Rule rule) {
         this.rule = rule;
-        this.timeStampQueue = new ArrayDeque<>();
+        this.timestamps = new long[rule.maxRequests];
+        this.start = 0;
+        this.end = 0;
+        this.size = 0;
     }
 
-    public boolean sendRequest() {
-        return rateLimit(this.customerId);
-    }
+    public synchronized boolean handleRequest() {
+        long currentTime = System.currentTimeMillis();
 
-    @Override
-    public boolean rateLimit(String customerId) {
-
-        long currentTimeStamp = System.currentTimeMillis();
-
-        while (!timeStampQueue.isEmpty() && timeStampQueue.getFirst() < currentTimeStamp - rule.timeWindowInMs) { // Delete Old Time Stamps - Out of Window
-            timeStampQueue.pollFirst();
+        while (size > 0 && currentTime - timestamps[start] > rule.windowTimeMillis) {
+            start = (start + 1) % rule.maxRequests;
+            size--;
         }
 
-        if (rule.noOfRequest == timeStampQueue.size()) {
-            return false;
-        } else {
-            timeStampQueue.addLast(currentTimeStamp);
+        if (size < rule.maxRequests) {
+            timestamps[end] = currentTime;
+            end = (end + 1) % rule.maxRequests;
+            size++;
             return true;
+        } else {
+            return false;
         }
     }
 }
 
 interface RateLimiter {
-
-    // Each customer can make X requests per Y seconds
     boolean rateLimit(String customerId);
-
 }
 
-public class RateLimiterDemo {
-    public static void main(String[] args) {
-        System.out.println("RateLimiterDemo");
+class RateLimiterEngine implements RateLimiter {
+    Map<String, Customer> customerMap;
 
-        Rule rule1 = new Rule(3, 60);
-        Customer customer1 = new Customer("Customer1", rule1);
+    RateLimiterEngine() {
+        customerMap = new HashMap<>();
+    }
 
-        boolean isSuccess = customer1.sendRequest();
+    public void addCustomer(Customer customer) {
+        customerMap.put(customer.customerId, customer);
+    }
 
-        System.out.println("Customer 1 Request " + isSuccess);
+    @Override
+    public boolean rateLimit(String customerId) {
+        if (customerMap.containsKey(customerId)) {
+            Customer customer = customerMap.get(customerId);
+            return customer.customerLimiter.handleRequest();
+        }
+        return false;
     }
 }
 
-//
-//User -
-//X , Y vary for each customer
-//100 R/ M
+public class RateLimiterDemo {
+    public static void main(String[] args) throws InterruptedException {
+        RateLimiterEngine rateLimiterEngine = new RateLimiterEngine();
 
-//1sec
-//10 re
+        String customerId = "customer1";
+        Rule rule1 = new Rule(5, 10000);
+        Customer customer1 = new Customer("customer1", rule1);
 
-//CurrentTimeStamp
-//Scale - Not in Scope
+        rateLimiterEngine.addCustomer(customer1);
 
+        simulateCustomer(rateLimiterEngine, customerId);
+    }
 
-
-//     1. Token Bucket
-//     2. Leaky Bucket -
-//     3. Sliding Window
-//     3. TimeStamp Sliding Windo
-
-
-// 3 R / 3 Min
-// // User -
-// // 12 Hr Window - timestamp
-//     //Deque // TimeStampQueue  - 1, 2, 3, .    ....  1000.  1002 O (Y)
-
-
-//     To Process a request
-//     1. If it is falling in the window
-//         //
-
-//     2. if it is not
-//         Discard - Note time stamp
-
-//     1. I am not maininting for each minute -> each request
-//     while ()
+    private static void simulateCustomer(RateLimiterEngine rateLimiterEngine, String customerId) throws InterruptedException {
+        for (int i = 1; i <= 10; i++) {
+            if (rateLimiterEngine.rateLimit(customerId)) {
+                System.out.println("Request " + i + " for " + customerId + " allowed");
+            } else {
+                System.out.println("Request " + i + " for " + customerId + " limited");
+            }
+            Thread.sleep(1000);
+        }
+    }
+}
 

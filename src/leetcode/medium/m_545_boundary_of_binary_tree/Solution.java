@@ -2,27 +2,12 @@ package leetcode.medium.m_545_boundary_of_binary_tree;
 
 //https://leetcode.com/problems/boundary-of-binary-tree/description/
 
+import graph.tree.Tree;
+import graph.tree.TreeNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-
-    TreeNode() {
-    }
-
-    TreeNode(int val) {
-        this.val = val;
-    }
-
-    TreeNode(int val, TreeNode left, TreeNode right) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
-}
 
 class Solution {
     public static List<Integer> boundaryOfBinaryTree(TreeNode root) {
@@ -78,18 +63,17 @@ class Solution {
         if (node == null) {
             return;
         }
-        getLeafNodes(node.left, list);
         if (node.left == null && node.right == null) {
             list.add(node.val);
         }
+        getLeafNodes(node.left, list);
         getLeafNodes(node.right, list);
     }
 
     public static void main(String[] args) {
-        TreeNode treeNode = new TreeNode(1);
-        treeNode.right = new TreeNode(2);
-        treeNode.right.left = new TreeNode(3);
-        treeNode.right.right = new TreeNode(4);
-        System.out.println(boundaryOfBinaryTree(treeNode));
+        Integer[] nodes = {1, 2, 3, 4, 5, 6, null, null, null, 7, 8, 9, 10};
+        Tree tree = new Tree();
+        TreeNode root = tree.buildTree(nodes);
+        System.out.println(boundaryOfBinaryTree(root));
     }
 }

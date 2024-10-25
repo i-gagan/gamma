@@ -29,12 +29,6 @@ class Solution {
             for (int i = 0; i < queueSize; i++) {
                 TreeNode temp = queue.poll();
                 currentLevelSum = currentLevelSum + temp.val;
-                if (i == queueSize - 1) {
-                    if (maxSum < currentLevelSum) {
-                        maxSum = currentLevelSum;
-                        minLevel = currentLevel;
-                    }
-                }
 
                 if (temp.left != null) {
                     queue.add(temp.left);
@@ -43,6 +37,10 @@ class Solution {
                 if (temp.right != null) {
                     queue.add(temp.right);
                 }
+            }
+            if (maxSum < currentLevelSum) {
+                maxSum = currentLevelSum;
+                minLevel = currentLevel;
             }
             currentLevel++;
         }
