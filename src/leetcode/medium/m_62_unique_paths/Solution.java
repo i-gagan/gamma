@@ -12,34 +12,34 @@ class Solution {
         for (int i = 0; i < m; i++) {
             Arrays.fill(dp[i], -1);
         }
-        return solve2(m, n, dp, 0, 0);
+        return solve2(m, n, 0, 0, dp);
     }
 
-    private static int solve1(int m, int n, int i, int j) {
-        if (i < 0 || j < 0 || i >= m || j >= n) {
+    private static int solve1(int m, int n, int row, int col) {
+        if (row < 0 || col < 0 || row >= m || col >= n) {
             return 0;
         }
-        if (i == m - 1 && j == n - 1) {
+        if (row == m - 1 && col == n - 1) {
             return 1;
         }
-        int left = solve1(m, n, i + 1, j);
-        int right = solve1(m, n, i, j + 1);
-        return left + right;
+        int down = solve1(m, n, row + 1, col);
+        int right = solve1(m, n, row, col + 1);
+        return down + right;
     }
 
-    private static int solve2(int m, int n, int[][] dp, int i, int j) {
-        if (i < 0 || j < 0 || i >= m || j >= n) {
+    private static int solve2(int m, int n, int row, int col, int[][] dp) {
+        if (row < 0 || col < 0 || row >= m || col >= n) {
             return 0;
         }
-        if (i == m - 1 && j == n - 1) {
+        if (row == m - 1 && col == n - 1) {
             return 1;
         }
-        if (dp[i][j] != -1) {
-            return dp[i][j];
+        if (dp[row][col] != -1) {
+            return dp[row][col];
         }
-        int left = solve2(m, n, dp, i + 1, j);
-        int right = solve2(m, n, dp, i, j + 1);
-        return dp[i][j] = left + right;
+        int down = solve2(m, n, row + 1, col, dp);
+        int right = solve2(m, n, row, col + 1, dp);
+        return dp[row][col] = down + right;
     }
 
     public static void main(String[] args) {

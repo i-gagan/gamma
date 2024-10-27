@@ -5,10 +5,7 @@ package leetcode.medium.m_107_binary_tree_level_order_traversal_II;
 import graph.tree.Tree;
 import graph.tree.TreeNode;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 class Solution {
     public static List<List<Integer>> levelOrderBottom(TreeNode root) {
@@ -18,24 +15,24 @@ class Solution {
             return result;
         }
 
-        Deque<TreeNode> queue = new LinkedList<>();
-
-        queue.offerLast(root);
-
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
         while (!queue.isEmpty()) {
+            int size = queue.size();
+            ;
             List<Integer> currentLevel = new ArrayList<>();
 
-            for (int i = queue.size(); i > 0; --i) {
-                TreeNode node = queue.pollFirst();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
 
                 currentLevel.add(node.val);
 
                 if (node.left != null) {
-                    queue.offerLast(node.left);
+                    queue.add(node.left);
                 }
 
                 if (node.right != null) {
-                    queue.offerLast(node.right);
+                    queue.add(node.right);
                 }
             }
             result.addFirst(currentLevel);
