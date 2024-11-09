@@ -1,4 +1,4 @@
-package companies.hashicorp;
+package companies.hashicorp.in_memory_database;
 
 import java.util.HashMap;
 import java.util.Map;
